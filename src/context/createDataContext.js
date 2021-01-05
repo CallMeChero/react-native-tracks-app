@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 
-export default (reducer, action, defaultState) => {
+export default (reducer, actions, defaultState) => {
     const Context = React.createContext();
 
     const Provider = ({ children }) => {
@@ -8,15 +8,15 @@ export default (reducer, action, defaultState) => {
 
         const boundActions = {};
         for(let key in actions) {
-            boundActions[key] = action[key](dispatch)
+            boundActions[key] = actions[key](dispatch)
         }
 
         return (
-            <Context.Provider value={{ state, ...boundActions }}>
+            <Context.Provider value={{ state: state, ...boundActions }} >
                 { children }
             </Context.Provider>
         );
     };
 
     return { Context: Context, Provider: Provider };
-}
+};
