@@ -1,4 +1,5 @@
 import createDataContext from './createDataContext';
+import trackApi from '../api/tracker';
 
 const authReducer = (state,action) => {
     switch(action.type) {
@@ -7,13 +8,17 @@ const authReducer = (state,action) => {
     }
 };
 
-const signup = (dispatch) => {
-    return ({ email, password }) => {
+const signup = dispatch => {
+    return async ({ email, password }) => {
         // make Sign up Request
-
         // success -> modify state (JWT authenticated)
-
         // error -> error msg
+        try {
+            const response = await trackApi.post('/signup', { email, password})
+            console.log(response.data);
+        } catch(err) {
+            console.log(err.message)
+        }
     };
 }
 
