@@ -10,6 +10,7 @@ import TrackDetailScreen from './src/screens/TrackDetailScreen';
 import TrackListScreen from './src/screens/TrackListScreen';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Provider as AuthProvider } from './src/context/AuthContext';
+import { setNavigator } from './src/helpers/navigationRef';
 
 const globalNavigationOptions = {
   // title: `Sign in`,
@@ -57,7 +58,7 @@ const App = createAppContainer(switchNavigator);
 export default () => {
   return (
     <AuthProvider>
-      <App />
+      <App ref={(navigator) => { setNavigator(navigator) }}/>
     </AuthProvider>
   );
 }
