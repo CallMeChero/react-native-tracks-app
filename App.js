@@ -11,6 +11,7 @@ import TrackListScreen from './src/screens/TrackListScreen';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Provider as AuthProvider } from './src/context/AuthContext';
 import { setNavigator } from './src/helpers/navigationRef';
+import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 
 const globalNavigationOptions = {
   // title: `Sign in`,
@@ -29,6 +30,7 @@ const globalNavigationOptions = {
 }
 
 const switchNavigator = createSwitchNavigator({
+  resolveAuth: ResolveAuthScreen,
   loginFlow: createStackNavigator({
     SignUp: {
       screen: SignUpScreen,
