@@ -4,28 +4,33 @@ import { NavigationEvents } from 'react-navigation';
 import { Context as AuthContext } from '../context/AuthContext';
 import AuthForm from '../components/AuthForm';
 import NavLink from '../components/NavLink';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const SignInScreen = ({ navigation }) => {
     const { state, signin, clearErrorMessage } = useContext(AuthContext)
 
-    return <View style={styles.container}>
+    return <LinearGradient
+            colors={['#56D0CB', '#288AB5' ]}
+            style={styles.container}>
+        <View style={{marginBottom: 200}}>
         <NavigationEvents 
             onWillFocus={() => { clearErrorMessage() }}
             // onDidFocus={() => {}}
             // onWillBlur={() => {}}
             // onDidBlur={() => {}} - kinda buggy
         />
-        <AuthForm 
-            headerText="Sign In for Tracker"
+        <AuthForm
+            headerText="Moneyview+"
             errorMessage={state.errorMessage}
-            submitText="Sign In"
+            submitText="Prijavi se"
             onSubmit={({email, password}) => signin({email, password})}
         />
         <NavLink 
-            linkText="Don't have an account? Go to Sign Up"
-            routeName="SignUp"
+            linkText="Zaboravljena lozinka?"
+            routeName="ResetPassword"
         />
-    </View>;
+        </View>
+        </LinearGradient>;
 }
 
 SignInScreen.navigationOptions = () => {
@@ -38,7 +43,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent:'center',
-        marginBottom: 250
     }
 });
 export default SignInScreen;
