@@ -26,7 +26,7 @@ const tryLocalSignin = dispatch => {
         const token = await AsyncStorage.getItem('token');
         if(token) {
             dispatch({ type: 'signin', payload: token});
-            navigate('TrackList');
+            navigate('groupFlow');
         } else {
             navigate('loginFlow');
         }
@@ -62,7 +62,7 @@ const signin = (dispatch) => {
             );
             await AsyncStorage.setItem('token', response.data.access_token);
             dispatch({ type: 'sigin', payload: response.data.access_token });
-            navigate('mainFlow');
+            navigate('groupFlow');
         } catch(err) {
             console.log(err)
             dispatch({ type: 'add_error', payload: 'Podaci nisu ispravni'});

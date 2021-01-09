@@ -28,11 +28,16 @@ const switchNavigator = createSwitchNavigator({
       }
     }
   }),
-  mainFlow: createBottomTabNavigator({
-    trackListFlow: createStackNavigator({
-      GroupScreen: GroupScreen,
-    }),
+  groupFlow: createStackNavigator({ 
+    GroupScreen: {
+      screen: GroupScreen
+    }
   })
+  // mainFlow: createBottomTabNavigator({
+  //   // trackListFlow: createStackNavigator({
+  //   //   GroupScreen: GroupScreen,
+  //   // }),
+  // })
 });
 
 const App = createAppContainer(switchNavigator);
