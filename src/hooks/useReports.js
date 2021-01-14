@@ -1,32 +1,31 @@
-import { useEffect, useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { Context as AuthContext } from '../context/AuthContext';
 import trackApi from '../api/tracker';
-import { AsyncStorage } from 'react-native'
+import { AsyncStorage } from 'react-native';
 
 export default () => {
-    const [ companies, setCompanies ] = useState([]);
+    const [ reports, setReports ] = useState([]);
     const { errorHandle } = useContext(AuthContext);
 
-    const getCompanies = async() => {
+    const getReports = async(firmId, date) => {
         try {
-            console.log('usao')
             const token = await AsyncStorage.getItem('token');
             if(token) {
-                const response = await trackApi.get('company',{
+                const response = await trackApi.get('getDashboard',{
+                    params: {
+                      firmId,
+                      date: date
+                    },
                     headers: {
                         'Authorization': 'Bearer '+ token
                     }
                 })
-                setCompanies(response.data.response.data);
+                setReports(response.data);
             }
         } catch(err) {
             errorHandle()
         }
     }
-
-    useEffect(() => {
-        getCompanies()
-    }, []);
-
-    return [getCompanies, companies]
+    
+    return [ getReports, reports ]
 };

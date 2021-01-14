@@ -3,15 +3,15 @@ import { View, StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native
 import useCompanies from '../hooks/useCompanies';
 import { Ionicons } from '@expo/vector-icons'; 
 
-const GroupScreen = ({ navigation }) => {
-    const [getCompanies, companies] = useCompanies();
-    const [ selectedCompanies, selectCompany ] = useState([]);
+const CompanyScreen = ({ navigation }) => {
+    const [ getCompanies, companies ] = useCompanies();
+    const [ selectedCompany, setSelectedCompany ] = useState(null);
 
     handleCompanySelection = (item) => {
-        if(selectedCompanies.some(company => company.name === item.name)) {
-            selectCompany(selectedCompanies.filter(x => x.id !== item.id));
+        if(selectedCompany && selectedCompany.name === item.name) {
+            setSelectedCompany(null);
         } else {
-            selectCompany(oldArray => [...oldArray, item]);
+            setSelectedCompany(item);
         }
     }
 
@@ -19,13 +19,11 @@ const GroupScreen = ({ navigation }) => {
         const listener = navigation.addListener('didFocus', () => {
             getCompanies();
         });
-
-        navigation.setParams({ selectedCompanies });
-
+        navigation.setParams({ selectedCompany });
         return () => {
             listener.remove();
         }
-    }, [selectedCompanies])
+    }, [selectedCompany])
 
     return (
         <View>
@@ -40,7 +38,7 @@ const GroupScreen = ({ navigation }) => {
                     }}>
                         <View style={styles.companyContainerStyle}>
                             <Text style={styles.textStyle}>{item.name}</Text>
-                            {  selectedCompanies.some(company => company.name === item.name) &&  <Ionicons name="checkmark-circle" size={24} color="#56D0CB" /> }
+                            {  selectedCompany ? selectedCompany.name === item.name ? <Ionicons name="checkmark-circle" size={20} color="#56D0CB" /> : null : null }
                         </View>
                     </TouchableOpacity>
                     );
@@ -63,26 +61,40 @@ const styles = StyleSheet.create({
     },
     textStyle: {
         fontSize: 18,
+    },
+    acceptText: {
+        fontWeight: 'bold',
+        fontSize: 14,
+        marginRight: 10,
+        color:'white'
     }
 });
 
-GroupScreen.navigationOptions = ({ navigation }) => {
+CompanyScreen.navigationOptions = ({ navigation }) => {
     return {
         headerStyle: { 
             backgroundColor: '#56D0CB', 
             borderBottomWidth: 0, 
             shadowColor: 'transparent'
         },
-        headerTitleStyle: { color: 'white' },
+        headerTitleStyle: { 
+            color: 'white'
+         },
         title: 'Izabir firme',
         headerRight: () =>
             <TouchableOpacity
-              onPress={() => console.log(navigation.state.params.selectedCompanies)}>
-                { navigation.state.params ? navigation.state.params.selectedCompanies.length ? <Text style={{marginRight: 10, color:'white'}}>
+              onPress={() => navigateToDetail(navigation, navigation.state.params.selectedCompany) }>
+                { navigation.state.params ? navigation.state.params.selectedCompany ? <Text style={styles.acceptText}>
                     Potvrdi
                 </Text> : null : null }
             </TouchableOpacity>
     }
 }
 
-export default GroupScreen;
+const navigateToDetail = (navigation, params) => {
+    if(params) {
+        navigation.navigate('CompanyDetail', { id: params.id, name: params.name })
+    }
+}
+
+export default CompanyScreen;

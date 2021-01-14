@@ -1,13 +1,13 @@
 import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
 import SignInScreen from './src/screens/SignInScreen';
 import { Provider as AuthProvider } from './src/context/AuthContext';
 import { setNavigator } from './src/helpers/navigationRef';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
-import GroupScreen from './src/screens/GroupScreen';
+import CompanyScreen from './src/screens/CompanyScreen';
+import CompanyDetailScreen from './src/screens/CompanyDetailScreen';
 
 const globalNavigationOptions = {
   headerBackTitle: 'Nazad',
@@ -29,8 +29,13 @@ const switchNavigator = createSwitchNavigator({
     }
   }),
   groupFlow: createStackNavigator({ 
-    GroupScreen: {
-      screen: GroupScreen
+    CompanyScreen: {
+      screen: CompanyScreen
+    }
+  }),
+  detailsFlow: createStackNavigator({
+    CompanyDetail: {
+      screen: CompanyDetailScreen
     }
   })
   // mainFlow: createBottomTabNavigator({
