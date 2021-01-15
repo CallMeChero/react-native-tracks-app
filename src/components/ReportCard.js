@@ -1,54 +1,116 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons'; 
+import { MaterialIcons } from '@expo/vector-icons';
 import NumberFormat from 'react-number-format';
 
-const ReportCard = ({ cardHeader, cardBody }) => {
-    console.log(cardHeader,cardBody)
+const ReportCard = ({ navProp, date, cardHeader, cardBody }) => {
+
+    const navigateToBankAccount = () => {
+        navProp.navigate('BankAccount', {
+            firmId: navProp.state.params.id,
+            creditDebitIndicator: cardHeader === 'Ulazna sredstva' ? 'PayIn' : 'PayOut',
+            date
+        })
+    }
+
     return (
         <View style={styles.cardContainer}>
             <View style={styles.cardHeader}>
                 <View style={styles.textHeader}>
                     <Text style={{ color:'white', fontSize: 24}}>{cardHeader}</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigateToBankAccount()}>
                         <MaterialIcons name="arrow-forward-ios" size={20} color="white" />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.totalAmount}>
-                    <Text>
-                        { cardBody ? 
-                            <NumberFormat 
-                                value={cardBody.totalSum.toFixed(2)}
-                                displayType={'text'}
-                                thousandSeparator={true}
-                                suffix={' HRK'} 
-                                renderText={value => <Text style={{ color: 'white', fontSize: 24 }}>{value}</Text>} 
-                            />
-                        : 
-                        <Text style={{ color: 'white', fontSize: 24 }}>
+                    { cardBody ?
+                        <NumberFormat
+                            value={cardBody.totalSum}
+                            displayType={'text'}
+                            thousandSeparator={'.'}
+                            decimalSeparator={','}
+                            decimalScale={2}
+                            suffix={' HRK'}
+                            renderText={value => <Text style={{ color: 'white', fontSize: 24 }}>{value}</Text>}
+                        />
+                    :
+                    <Text style={{ color: 'white', fontSize: 24 }}>
                         0,00 HRK
-                        </Text>
-                        }
-                        {/* { cardBody ? cardBody.totalSum.toFixed(2).replace('.', ',') + ' HRK' : '0,00 HRK' } */}
                     </Text>
+                    }
+                    {/* { cardBody ? cardBody.totalSum.toFixed(2).replace('.', ',') + ' HRK' : '0,00 HRK' } */}
                 </View>
             </View>
             <View style={styles.cardBody}>
                 <View style={styles.cardBodyRow}>
                     <Text style={ styles.cardBodyText }>Vlastita sredstva HRK</Text>
-                    <Text style={ styles.cardBodyText }>{ cardBody ? cardBody.hrkSum.toFixed(2).replace('.', ',') + ' HRK' : '0,00 HRK' }</Text>
+                    <Text style={ styles.cardBodyText }>
+                        { cardBody ? 
+                            <NumberFormat
+                                value={cardBody.hrkSum}
+                                displayType={'text'}
+                                thousandSeparator={'.'}
+                                decimalSeparator={','}
+                                decimalScale={2}
+                                suffix={' HRK'}
+                                renderText={value => <Text style={{ fontWeight: 'bold' }}>{value}</Text>}
+                            />
+                            : 
+                            '0,00 HRK'
+                        }
+                    </Text>
                 </View>
                 <View style={styles.cardBodyRow}>
                     <Text style={ styles.cardBodyText }>Vlastita sredstva EUR</Text>
-                    <Text style={ styles.cardBodyText }>{ cardBody ? cardBody.eurSum.toFixed(2).replace('.', ',') + ' HRK' : '0,00 HRK' }</Text>
+                    <Text style={ styles.cardBodyText }>
+                        { cardBody ? 
+                            <NumberFormat
+                                value={cardBody.eurSum}
+                                displayType={'text'}
+                                thousandSeparator={'.'}
+                                decimalSeparator={','}
+                                decimalScale={2}
+                                suffix={' HRK'}
+                                renderText={value => <Text style={{ fontWeight: 'bold' }}>{value}</Text>}
+                            />
+                            : '0,00 HRK' 
+                        }
+                    </Text>
                 </View>
                 <View style={styles.cardBodyRow}>
                     <Text style={ styles.cardBodyText }>Vlastita sredstva USD</Text>
-                    <Text style={ styles.cardBodyText }>{ cardBody ? cardBody.usdSum.toFixed(2).replace('.', ',') + ' HRK' : '0,00 HRK' }</Text>
+                    <Text style={ styles.cardBodyText }>
+                        { cardBody  ? 
+                            <NumberFormat
+                                value={cardBody.usdSum}
+                                displayType={'text'}
+                                thousandSeparator={'.'}
+                                decimalSeparator={','}
+                                decimalScale={2}
+                                suffix={' HRK'}
+                                renderText={value => <Text style={{ fontWeight: 'bold' }}>{value}</Text>}
+                            />
+                            : 
+                            '0,00 HRK' 
+                        }
+                    </Text>
                 </View>
                 <View style={styles.cardBodyRow}>
                     <Text style={ styles.cardBodyText }>Vlastita sredstva GBP</Text>
-                    <Text style={ styles.cardBodyText }>{ cardBody ? cardBody.gbpSum.toFixed(2).replace('.', ',') + ' HRK' : '0,00 HRK' }</Text>
+                    <Text style={ styles.cardBodyText }>
+                        { cardBody ? 
+                            <NumberFormat
+                                value={cardBody.gbpSum}
+                                displayType={'text'}
+                                thousandSeparator={'.'}
+                                decimalSeparator={','}
+                                decimalScale={2}
+                                suffix={' HRK'}
+                                renderText={value => <Text style={{ fontWeight: 'bold' }}>{value}</Text>}
+                            /> 
+                        : 
+                        '0,00 HRK' }
+                    </Text>
                 </View>
             </View>
         </View>
@@ -85,7 +147,7 @@ const styles = StyleSheet.create({
     },
     cardBody: {
         borderWidth: 0.5,
-        borderColor:'gray',
+        borderColor:'lightgray',
         borderTopColor: 'white',
         display: 'flex',
         marginHorizontal: 15,

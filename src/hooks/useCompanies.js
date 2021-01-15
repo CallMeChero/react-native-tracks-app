@@ -9,7 +9,6 @@ export default () => {
 
     const getCompanies = async() => {
         try {
-            console.log('usao')
             const token = await AsyncStorage.getItem('token');
             if(token) {
                 const response = await trackApi.get('company',{

@@ -8,6 +8,7 @@ import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
 import CompanyScreen from './src/screens/CompanyScreen';
 import CompanyDetailScreen from './src/screens/CompanyDetailScreen';
+import BankAccountScreen from './src/screens/BankAcountScreen';
 
 const globalNavigationOptions = {
   headerBackTitle: 'Nazad',
@@ -36,6 +37,12 @@ const switchNavigator = createSwitchNavigator({
   detailsFlow: createStackNavigator({
     CompanyDetail: {
       screen: CompanyDetailScreen
+    },
+    BankAccount: {
+      screen: BankAccountScreen,
+      navigationOptions: () => {
+        return globalNavigationOptions
+      }
     }
   })
   // mainFlow: createBottomTabNavigator({

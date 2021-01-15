@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import useReports from '../hooks/useReports';
 import HeaderDatePicker from '../components/HeaderDatePicker';
@@ -7,28 +7,37 @@ import ReportCard from '../components/ReportCard';
 const CompanyDetailScreen = ({navigation}) => {
     const companyId = navigation.getParam('id');
     const [ getReports, reports] = useReports();
+    const [ date, setDate ] = useState(new Date());
 
     useEffect(() => {
         getReports(companyId, new Date());
         const listener = navigation.addListener('didFocus', () => {
             getReports(companyId, new Date());
         });
-        console.log('reports',reports)
         return () => {
             listener.remove();
         }
     }, []);
 
+    const handleDateChange = (dateString) => {
+        setDate(dateString);
+        getReports(companyId, dateString);
+    }
+
     return (
         <View style={{flex: 10}}>
-            <HeaderDatePicker onChangeDate={dateString => {console.log('opalio req');getReports(companyId, dateString)}}/>
-            <ReportCard 
+            <HeaderDatePicker onChangeDate={ dateString => handleDateChange(dateString)}/>
+            <ReportCard
+                navProp={navigation}
                 cardHeader="Ulazna sredstva"
                 cardBody={reports.payInSummary}
+                date={date}
             />
-            <ReportCard 
+            <ReportCard
+                navProp={navigation}
                 cardHeader="Izlazna sredstva"
                 cardBody={reports.payoutSummary}
+                date={date}
             />
         </View>
     );
