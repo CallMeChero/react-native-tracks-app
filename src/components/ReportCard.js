@@ -14,11 +14,11 @@ const ReportCard = ({ navProp, date, cardHeader, cardBody }) => {
     }
 
     return (
-        <View style={styles.cardContainer}>
+        <View>
             <View style={styles.cardHeader}>
                 <View style={styles.textHeader}>
                     <Text style={{ color:'white', fontSize: 24}}>{cardHeader}</Text>
-                    <TouchableOpacity onPress={() => navigateToBankAccount()}>
+                    <TouchableOpacity onPress={() => cardBody ? navigateToBankAccount() : null}>
                         <MaterialIcons name="arrow-forward-ios" size={20} color="white" />
                     </TouchableOpacity>
                 </View>
@@ -38,7 +38,6 @@ const ReportCard = ({ navProp, date, cardHeader, cardBody }) => {
                         0,00 HRK
                     </Text>
                     }
-                    {/* { cardBody ? cardBody.totalSum.toFixed(2).replace('.', ',') + ' HRK' : '0,00 HRK' } */}
                 </View>
             </View>
             <View style={styles.cardBody}>
@@ -118,9 +117,6 @@ const ReportCard = ({ navProp, date, cardHeader, cardBody }) => {
 }
 
 const styles = StyleSheet.create({
-    cardContainer: {
-        // height: 175
-    },
     cardHeader: {
         backgroundColor: '#55CECA',
         color: '#55CECA',
@@ -128,7 +124,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
-        height: 95
+        height: 100
     },
     totalAmount: {
         paddingVertical: 10,

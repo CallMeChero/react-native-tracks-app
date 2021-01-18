@@ -22,7 +22,6 @@ export default () => {
                         'Authorization': 'Bearer '+ token
                     }
                 })
-                console.log('banke',response.data.banks)
                 setBankAccounts(response.data);
             }
         } catch(err) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import useReports from '../hooks/useReports';
 import HeaderDatePicker from '../components/HeaderDatePicker';
 import ReportCard from '../components/ReportCard';
@@ -10,13 +10,13 @@ const CompanyDetailScreen = ({navigation}) => {
     const [ date, setDate ] = useState(new Date());
 
     useEffect(() => {
-        getReports(companyId, new Date());
-        const listener = navigation.addListener('didFocus', () => {
-            getReports(companyId, new Date());
-        });
-        return () => {
-            listener.remove();
-        }
+        getReports(companyId, date);
+        // const listener = navigation.addListener('didFocus', () => {
+        //     getReports(companyId, date);
+        // });
+        // return () => {
+        //     listener.remove();
+        // }
     }, []);
 
     const handleDateChange = (dateString) => {
@@ -25,20 +25,24 @@ const CompanyDetailScreen = ({navigation}) => {
     }
 
     return (
-        <View style={{flex: 10}}>
-            <HeaderDatePicker onChangeDate={ dateString => handleDateChange(dateString)}/>
-            <ReportCard
-                navProp={navigation}
-                cardHeader="Ulazna sredstva"
-                cardBody={reports.payInSummary}
-                date={date}
-            />
-            <ReportCard
-                navProp={navigation}
-                cardHeader="Izlazna sredstva"
-                cardBody={reports.payoutSummary}
-                date={date}
-            />
+        <View style={{flex: 1}}>
+            <ScrollView>
+                <View style={{flex: 10}}>
+                    <HeaderDatePicker onChangeDate={ dateString => handleDateChange(dateString)}/>
+                    <ReportCard
+                        navProp={navigation}
+                        cardHeader="Ulazna sredstva"
+                        cardBody={reports.payInSummary}
+                        date={date}
+                    />
+                    <ReportCard
+                        navProp={navigation}
+                        cardHeader="Izlazna sredstva"
+                        cardBody={reports.payoutSummary}
+                        date={date}
+                    />
+                </View>
+            </ScrollView>
         </View>
     );
 };
@@ -48,7 +52,7 @@ CompanyDetailScreen.navigationOptions = ({ navigation}) => {
         headerStyle: { 
             backgroundColor: '#56D0CB', 
             borderBottomWidth: 0, 
-            shadowColor: 'transparent'
+            shadowColor: 'transparent',
         },
         headerTitleStyle: { 
             color: 'white',

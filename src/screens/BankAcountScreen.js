@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { View, StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, FlatList, TouchableOpacity, ScrollView} from 'react-native';
 import useBankAccounts from '../hooks/useBankAccounts';
 import { MaterialIcons } from '@expo/vector-icons';
 import NumberFormat from 'react-number-format';
@@ -11,55 +11,81 @@ const BankAccountScreen = ({navigation}) => {
     const [ getBankAccounts, accounts ] = useBankAccounts();
 
     useEffect(() => {
-        getBankAccounts(companyId, new Date(), creditDebitIndicator);
+        getBankAccounts(companyId, date, creditDebitIndicator);
+        console.log('acc',accounts)
     }, []);
 
     return (
-        <FlatList
-            data={accounts.banks}
-            keyExtractor={(result) => result.id.toString()}
-            renderItem={({item: instance}) => {
-                return (
-                    instance.bankAccounts.length ? 
-                    <FlatList 
-                        data={instance.bankAccounts}
-                        keyExtractor={(res) => res.id.toString()}
-                        renderItem={({item}) => {
-                            console.log('item',item)
-                            return (
-                                <View style={ styles.cardContainer }>
-                                    <View style={ styles.cardHeader }>
-                                        <View style={ styles.textHeader }>
-                                            <Text style={{ color:'black', fontSize: 16}}>{instance.bank}</Text>
-                                            <TouchableOpacity>
-                                                <MaterialIcons name="arrow-forward-ios" size={20} color="black" />
-                                            </TouchableOpacity>
+        <View style={{flex: 1}}>
+            <ScrollView>
+                <FlatList
+                    data={accounts.banks}
+                    keyExtractor={(result) => result.id.toString()}
+                    renderItem={({item: instance}) => {
+                        return (
+                            instance.bankAccounts.length ? 
+                            <FlatList 
+                                data={instance.bankAccounts}
+                                keyExtractor={(res) => res.id.toString()}
+                                renderItem={({item}) => {
+                                    return (
+                                        <View style={ styles.cardContainer }>
+                                            <View style={ styles.cardHeader }>
+                                                <View style={ styles.textHeader }>
+                                                    <Text style={{ color:'black', fontSize: 16}}>{instance.bank}</Text>
+                                                    <TouchableOpacity>
+                                                        <MaterialIcons name="arrow-forward-ios" size={20} color="black" />
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <View style={styles.ibanContainer}>
+                                                    <Text style={{ color: 'gray', fontSize: 16 }}>
+                                                        {item.iban}
+                                                    </Text>
+                                                </View>
+                                                <View style={styles.totalAmount}>
+                                                    {
+                                                        item.hrk !== 0 ?
+                                                        <NumberFormat
+                                                            value={item.hrk}
+                                                            displayType={'text'}
+                                                            thousandSeparator={'.'}
+                                                            decimalSeparator={','}
+                                                            decimalScale={2}
+                                                            suffix={' HRK'}
+                                                            renderText={value => <Text style={{ fontSize: 20 }}>{value}</Text>}
+                                                        /> 
+                                                        : 
+                                                        <Text style={{ fontSize: 20 }}>0,00 HRK</Text>
+                                                    }
+                                                    
+                                                </View>
+                                            </View>
                                         </View>
-                                        <View style={styles.ibanContainer}>
-                                            <Text style={{ color: 'gray', fontSize: 16 }}>
-                                                {item.iban}
-                                            </Text>
-                                        </View>
-                                        <View style={styles.totalAmount}>
-                                            <NumberFormat
-                                                value={item.hrk}
-                                                displayType={'text'}
-                                                thousandSeparator={'.'}
-                                                decimalSeparator={','}
-                                                decimalScale={2}
-                                                suffix={' HRK'}
-                                                renderText={value => <Text style={{ fontSize: 20 }}>{value}</Text>}
-                                            />
-                                        </View>
-                                    </View>
-                                </View>
-                            );
-                        }}
-                    />
-                    : null
-                );
-            }}
-        />
+                                    );
+                                }}
+                            />
+                            : null
+                        );
+                    }}
+                />
+            </ScrollView>
+            <View style={styles.footer}>
+                <Text style={{ fontSize: 20, color: 'white' }}>
+                    UKUPNO:
+                </Text>
+                <Text>
+                <NumberFormat
+                    value={accounts.hrk}
+                    displayType={'text'}
+                    thousandSeparator={'.'}
+                    decimalSeparator={','}
+                    decimalScale={2}
+                    suffix={' HRK'}
+                    renderText={value => <Text style={{ fontSize: 20, color: 'white' }}>{value}</Text>}
+                /> 
+                </Text>
+            </View>
+        </View>
     );
 };
 
@@ -72,7 +98,14 @@ BankAccountScreen.navigationOptions = ({navigation}) => {
             shadowColor: 'transparent'
         },
         headerTitleStyle: { color: 'white' },
-        headerTitle: titleName
+        headerTitle: titleName,
+        headerRight: () =>
+            <TouchableOpacity>
+                <Text style={{ marginRight: 10, color: 'white' }}>
+                    <MaterialIcons name="search" size={28} color="white" />
+                </Text> 
+            </TouchableOpacity>
+            
     }
 };
 
@@ -86,10 +119,10 @@ const styles = StyleSheet.create({
         borderColor: 'lightgray'
     },
     cardHeader: {
-        height: 85
+        height: 80
     },
     totalAmount: {
-        padding: 10,
+        padding: 5,
         paddingHorizontal: 15,
         flex: 1,
         flexDirection: 'row',
@@ -104,6 +137,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
+    },
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 20,
+        backgroundColor: '#55CECA'
     }
 })
 
