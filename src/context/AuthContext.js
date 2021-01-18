@@ -2,17 +2,20 @@ import { AsyncStorage } from 'react-native';
 import createDataContext from './createDataContext';
 import trackApi from '../api/tracker';
 import { navigate } from '../helpers/navigationRef';
+import qs from 'qs';
 
 const authReducer = (state,action) => {
     switch(action.type) {
+        case 'global_error':
+            return { token: null, errorMessage: '', global_error: 'Trebate se ponovno prijaviti' };
         case 'add_error':
-            return { ...state, errorMessage: action.payload };
+            return { ...state, errorMessage: action.payload, global_error: '' };
         case 'signin':
-            return { token: action.payload, errorMessage: '' }
+            return { token: action.payload, errorMessage: '', global_error: '' }
         case 'clear_error_message':
-            return { ...state, errorMessage: '' }
+            return { ...state, errorMessage: '', global_error: '' }
         case 'signout': 
-            return { token: null, errorMessage: '' }
+            return { token: null, errorMessage: '', global_error: '' }
         default: 
             return state;
     }
@@ -23,7 +26,7 @@ const tryLocalSignin = dispatch => {
         const token = await AsyncStorage.getItem('token');
         if(token) {
             dispatch({ type: 'signin', payload: token});
-            navigate('TrackList');
+            navigate('groupFlow');
         } else {
             navigate('loginFlow');
         }
@@ -34,34 +37,34 @@ const clearErrorMessage = dispatch => () => {
     dispatch({ type: 'clear_error_message'});
 }
 
-const signup = dispatch => {
-    return async ({ email, password }) => {
-        // make Sign up Request
-        // success -> modify state (JWT authenticated) and navigate
-        // error -> error msg
-        try {
-            const response = await trackApi.post('/signup', { email, password})
-            await AsyncStorage.setItem('token', response.data.token);
-            dispatch({ type: 'signin', payload: response.data.token });
-            navigate('TrackList');
-        } catch(err) {
-            dispatch({ type: 'add_error', payload: 'Something went wrong with sign up'});
-        }
+const errorHandle = (dispatch) => {
+    return async () => {
+        await AsyncStorage.removeItem('token');
+        dispatch({ type: 'global_error' });
+        navigate('loginFlow')
     };
 }
 
 const signin = (dispatch) => {
     return async ({ email, password }) => {
-        // make Sign in Request
-        // success -> modify state (JWT authenticated) and navigate
-        // error -> error msg
         try {
-            const response = await trackApi.post('/signin', { email, password})
-            await AsyncStorage.setItem('token', response.data.token);
-            dispatch({ type: 'sigin', payload: response.data.token });
-            navigate('TrackList');
+            const response = await trackApi.post(
+                'login', 
+                qs.stringify({
+                    userNameOrEmail: email, 
+                    password: password 
+                }),   
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                }
+            );
+            await AsyncStorage.setItem('token', response.data.access_token);
+            dispatch({ type: 'sigin', payload: response.data.access_token });
+            navigate('groupFlow');
         } catch(err) {
-            dispatch({ type: 'add_error', payload: 'Something went wrong with sign in'});
+            dispatch({ type: 'add_error', payload: 'Podaci nisu ispravni'});
         }
     };
 }
@@ -79,6 +82,6 @@ const signout = (dispatch) => {
 
 export const { Provider, Context } = createDataContext(
     authReducer,
-    { signin, signout, signup, clearErrorMessage, tryLocalSignin },
+    { signin, signout, clearErrorMessage, tryLocalSignin, errorHandle },
     { token: '', errorMessage: '' }
 )

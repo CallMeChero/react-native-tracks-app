@@ -1,58 +1,62 @@
 import React from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import { createStackNavigator, Header } from 'react-navigation-stack';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
-import AccountScreen from './src/screens/AccountScreen';
+import { createStackNavigator } from 'react-navigation-stack';
 import SignInScreen from './src/screens/SignInScreen';
-import SignUpScreen from './src/screens/SignUpScreen';
-import TrackCreateScreen from './src/screens/TrackCreateScreen';
-import TrackDetailScreen from './src/screens/TrackDetailScreen';
-import TrackListScreen from './src/screens/TrackListScreen';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Provider as AuthProvider } from './src/context/AuthContext';
 import { setNavigator } from './src/helpers/navigationRef';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
+import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
+import CompanyScreen from './src/screens/CompanyScreen';
+import CompanyDetailScreen from './src/screens/CompanyDetailScreen';
+import BankAccountScreen from './src/screens/BankAcountScreen';
+import BankAccountDetailScreen from './src/screens/BankAccountDetailScreen';
 
 const globalNavigationOptions = {
-  // title: `Sign in`,
   headerBackTitle: 'Nazad',
-  headerBackground: () => (
-    <LinearGradient
-      colors={['#a13388', '#10356c']}
-      style={{ flex: 1 }}
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 0}}
-    />
-  ),
-  headerTitleStyle: {
-    color: '#fff'
-  }
+  headerTintColor: 'white',
+  headerBackTitleVisible: false
 }
 
 const switchNavigator = createSwitchNavigator({
   resolveAuth: ResolveAuthScreen,
   loginFlow: createStackNavigator({
-    SignUp: {
-      screen: SignUpScreen,
-      navigationOptions: () => {
-        return globalNavigationOptions
-      }
-    },
     SignIn: {
-      screen: SignInScreen,
+      screen: SignInScreen
+    },
+    ResetPassword: {
+      screen: ResetPasswordScreen,
+      navigationOptions: () => {
+        return globalNavigationOptions
+      }
+    }
+  }),
+  groupFlow: createStackNavigator({ 
+    CompanyScreen: {
+      screen: CompanyScreen
+    }
+  }),
+  detailsFlow: createStackNavigator({
+    CompanyDetail: {
+      screen: CompanyDetailScreen
+    },
+    BankAccount: {
+      screen: BankAccountScreen,
       navigationOptions: () => {
         return globalNavigationOptions
       }
     },
-  }),
-  mainFlow: createBottomTabNavigator({
-    trackListFlow: createStackNavigator({
-      TrackList: TrackListScreen,
-      TrackDetail: TrackDetailScreen
-    }),
-    TrackCreate: TrackCreateScreen,
-    Account: AccountScreen
+    BankAccountDetail: {
+      screen: BankAccountDetailScreen,
+      navigationOptions: () => {
+        return globalNavigationOptions
+      }
+    }
   })
+  // mainFlow: createBottomTabNavigator({
+  //   // trackListFlow: createStackNavigator({
+  //   //   GroupScreen: GroupScreen,
+  //   // }),
+  // })
 });
 
 const App = createAppContainer(switchNavigator);
