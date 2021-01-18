@@ -15,15 +15,18 @@ const ReportCard = ({ navProp, date, cardHeader, cardBody }) => {
 
     return (
         <View>
-            <View style={styles.cardHeader}>
-                <View style={styles.textHeader}>
-                    <Text style={{ color:'white', fontSize: 24}}>{cardHeader}</Text>
-                    <TouchableOpacity onPress={() => cardBody ? navigateToBankAccount() : null}>
-                        <MaterialIcons name="arrow-forward-ios" size={20} color="white" />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.totalAmount}>
-                    { cardBody ?
+            {
+                cardBody &&
+                <>
+                <TouchableOpacity onPress={() => { cardBody ? navigateToBankAccount() : null }}>
+                <View style={styles.cardHeader}>
+                    <View style={styles.textHeader}>
+                        <Text style={{ color:'white', fontSize: 24}}>{cardHeader}</Text>
+                        <Text>
+                            <MaterialIcons name="arrow-forward-ios" size={20} color="white" />
+                        </Text>
+                    </View>
+                    <View style={styles.totalAmount}>
                         <NumberFormat
                             value={cardBody.totalSum}
                             displayType={'text'}
@@ -31,87 +34,71 @@ const ReportCard = ({ navProp, date, cardHeader, cardBody }) => {
                             decimalSeparator={','}
                             decimalScale={2}
                             suffix={' HRK'}
-                            renderText={value => <Text style={{ color: 'white', fontSize: 24 }}>{value}</Text>}
+                            renderText={value => <Text style={{ color: 'white', fontSize: 24 }}>{value !== 0 ? value : '0,00 HRK'}</Text>}
                         />
-                    :
-                    <Text style={{ color: 'white', fontSize: 24 }}>
-                        0,00 HRK
-                    </Text>
-                    }
+                    </View>
                 </View>
-            </View>
+            </TouchableOpacity>
             <View style={styles.cardBody}>
                 <View style={styles.cardBodyRow}>
                     <Text style={ styles.cardBodyText }>Vlastita sredstva HRK</Text>
                     <Text style={ styles.cardBodyText }>
-                        { cardBody ? 
-                            <NumberFormat
-                                value={cardBody.hrkSum}
-                                displayType={'text'}
-                                thousandSeparator={'.'}
-                                decimalSeparator={','}
-                                decimalScale={2}
-                                suffix={' HRK'}
-                                renderText={value => <Text style={{ fontWeight: 'bold' }}>{value}</Text>}
-                            />
-                            : 
-                            '0,00 HRK'
-                        }
+                        <NumberFormat
+                            value={cardBody.hrkSum}
+                            displayType={'text'}
+                            thousandSeparator={'.'}
+                            decimalSeparator={','}
+                            decimalScale={2}
+                            suffix={' HRK'}
+                            renderText={value => <Text style={{ fontWeight: 'bold' }}>{value !== 0 ? value : '0,00 HRK'}</Text>}
+                        />
                     </Text>
                 </View>
                 <View style={styles.cardBodyRow}>
                     <Text style={ styles.cardBodyText }>Vlastita sredstva EUR</Text>
                     <Text style={ styles.cardBodyText }>
-                        { cardBody ? 
-                            <NumberFormat
-                                value={cardBody.eurSum}
-                                displayType={'text'}
-                                thousandSeparator={'.'}
-                                decimalSeparator={','}
-                                decimalScale={2}
-                                suffix={' HRK'}
-                                renderText={value => <Text style={{ fontWeight: 'bold' }}>{value}</Text>}
-                            />
-                            : '0,00 HRK' 
-                        }
+                        <NumberFormat
+                            value={cardBody.eurSum}
+                            displayType={'text'}
+                            thousandSeparator={'.'}
+                            decimalSeparator={','}
+                            decimalScale={2}
+                            suffix={' HRK'}
+                            renderText={value => <Text style={{ fontWeight: 'bold' }}>{value !== 0 ? value : '0,00 HRK'}</Text>}
+                        />
                     </Text>
                 </View>
                 <View style={styles.cardBodyRow}>
                     <Text style={ styles.cardBodyText }>Vlastita sredstva USD</Text>
                     <Text style={ styles.cardBodyText }>
-                        { cardBody  ? 
-                            <NumberFormat
-                                value={cardBody.usdSum}
-                                displayType={'text'}
-                                thousandSeparator={'.'}
-                                decimalSeparator={','}
-                                decimalScale={2}
-                                suffix={' HRK'}
-                                renderText={value => <Text style={{ fontWeight: 'bold' }}>{value}</Text>}
-                            />
-                            : 
-                            '0,00 HRK' 
-                        }
+                        <NumberFormat
+                            value={cardBody.usdSum}
+                            displayType={'text'}
+                            thousandSeparator={'.'}
+                            decimalSeparator={','}
+                            decimalScale={2}
+                            suffix={' HRK'}
+                            renderText={value => <Text style={{ fontWeight: 'bold' }}>{value !== 0 ? value : '0,00 HRK'}</Text>}
+                        />
                     </Text>
                 </View>
                 <View style={styles.cardBodyRow}>
                     <Text style={ styles.cardBodyText }>Vlastita sredstva GBP</Text>
                     <Text style={ styles.cardBodyText }>
-                        { cardBody ? 
-                            <NumberFormat
-                                value={cardBody.gbpSum}
-                                displayType={'text'}
-                                thousandSeparator={'.'}
-                                decimalSeparator={','}
-                                decimalScale={2}
-                                suffix={' HRK'}
-                                renderText={value => <Text style={{ fontWeight: 'bold' }}>{value}</Text>}
-                            /> 
-                        : 
-                        '0,00 HRK' }
+                        <NumberFormat
+                            value={cardBody.gbpSum}
+                            displayType={'text'}
+                            thousandSeparator={'.'}
+                            decimalSeparator={','}
+                            decimalScale={2}
+                            suffix={' HRK'}
+                            renderText={value => <Text style={{ fontWeight: 'bold' }}>{value !== 0 ? value : '0,00 HRK'}</Text>}
+                        /> 
                     </Text>
                 </View>
             </View>
+            </>
+            }
         </View>
     );
 }

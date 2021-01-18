@@ -9,6 +9,7 @@ import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
 import CompanyScreen from './src/screens/CompanyScreen';
 import CompanyDetailScreen from './src/screens/CompanyDetailScreen';
 import BankAccountScreen from './src/screens/BankAcountScreen';
+import BankAccountDetailScreen from './src/screens/BankAccountDetailScreen';
 
 const globalNavigationOptions = {
   headerBackTitle: 'Nazad',
@@ -40,6 +41,12 @@ const switchNavigator = createSwitchNavigator({
     },
     BankAccount: {
       screen: BankAccountScreen,
+      navigationOptions: () => {
+        return globalNavigationOptions
+      }
+    },
+    BankAccountDetail: {
+      screen: BankAccountDetailScreen,
       navigationOptions: () => {
         return globalNavigationOptions
       }
