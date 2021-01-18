@@ -25,8 +25,7 @@ export default () => {
                 setBankAccounts(response.data);
             }
         } catch(err) {
-            console.log('err', err)
-            // errorHandle()
+            errorHandle()
         }
     }
     

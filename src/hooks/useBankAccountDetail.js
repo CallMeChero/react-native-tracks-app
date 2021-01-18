@@ -21,12 +21,10 @@ export default () => {
                         'Authorization': 'Bearer '+ token
                     }
                 });
-                console.log(response.data);
                 setBankAccount(response.data);
             }
         } catch(err) {
-            console.log('err', err)
-            // errorHandle()
+            errorHandle()
         }
     }
     

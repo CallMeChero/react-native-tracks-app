@@ -8,7 +8,6 @@ export default () => {
     const { errorHandle } = useContext(AuthContext);
 
     const getReports = async(firmId, date) => {
-        console.log(date)
         try {
             const token = await AsyncStorage.getItem('token');
             if(token) {
@@ -21,7 +20,6 @@ export default () => {
                         'Authorization': 'Bearer '+ token
                     }
                 })
-                console.log(response)
                 setReports(response.data);
             }
         } catch(err) {

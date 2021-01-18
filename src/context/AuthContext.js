@@ -64,7 +64,6 @@ const signin = (dispatch) => {
             dispatch({ type: 'sigin', payload: response.data.access_token });
             navigate('groupFlow');
         } catch(err) {
-            console.log(err)
             dispatch({ type: 'add_error', payload: 'Podaci nisu ispravni'});
         }
     };
