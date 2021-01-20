@@ -10,7 +10,7 @@ const BankAccountList = ({ navigation, instance }) => {
             keyExtractor={(res) => res.id.toString()}
             renderItem={({item}) => {
                 return (
-                    <TouchableOpacity onPress={() => item.hrk !== 0 ? navigation.navigate('BankAccountDetail', { bankName: instance.bank, bankAccountId: item.id, date: navigation.getParam('date'), summaryType: navigation.getParam('creditDebitIndicator') }) : null}>
+                    <TouchableOpacity onPress={() => item.hrk !== 0 ? navigation.navigate('BankAccountDetail', { bankName: instance.bank, bankAccountId: item.id, date: navigation.getParam('date'), summaryType: navigation.getParam('creditDebitIndicator'), companyId: navigation.getParam('firmId') }) : null}>
                         <View style={ styles.cardContainer }>
                             <View style={ styles.cardHeader }>
                                 <View style={ styles.textHeader }>

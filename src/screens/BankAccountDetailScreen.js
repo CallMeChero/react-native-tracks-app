@@ -11,6 +11,7 @@ const BankAccountDetailScreen = ({ navigation }) => {
     const date = navigation.getParam('date');
     const summaryType = navigation.getParam('summaryType');
     const bankName = navigation.getParam('bankName');
+    const companyId = navigation.getParam('companyId');
     const [ getBankAccountDetail, account ] = useBankAccountDetail();
     const openModal = () => ModalService.openModal(true)
 
@@ -25,7 +26,7 @@ const BankAccountDetailScreen = ({ navigation }) => {
                 account &&
                 <>
                     <BankAccount account={account} bankName={bankName}/>
-                    <ExportModal/>
+                    <ExportModal companyId={companyId} summaryType={summaryType} date={date}/>
                 </>
             }
         </View>

@@ -1,20 +1,114 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ModalService } from '../helpers/modalSubject';
-import { MaterialIcons } from '@expo/vector-icons'; 
+import { MaterialIcons } from '@expo/vector-icons';
+import { AsyncStorage } from 'react-native'; 
+import { format } from 'date-fns';
+import * as FileSystem from 'expo-file-system';
+import * as Notifications from 'expo-notifications'
+import { Permissions } from 'expo';
+import Toast, {DURATION} from 'react-native-easy-toast'
 
-const ExportModal = ({ }) => {
+async function getiOSNotificationPermission() {
+  const { status } = await Permissions.getAsync(
+    Permissions.NOTIFICATIONS
+  );
+  if (status !== 'granted') {
+    await Permissions.askAsync(Permissions.NOTIFICATIONS);
+  }
+}
+
+const ExportModal = ({ companyId, summaryType, date }) => {
 
   const [ visibility, setVisibility ] = useState(false);
-  const [ exportType, setExportType ] = useState(null)
+  const [ exportType, setExportType ] = useState(null);
+  const [ filePreviewText, setFilePreviewText ] = useState(''); 
+  const [ error, setError ] = useState('');
 
   useEffect(()=> {
-    ModalService.getIsOpen().subscribe(data => {
+    const subscription = ModalService.getIsOpen().subscribe(data => {
       if(data) {
         setVisibility(true);
+        getiOSNotificationPermission();
       }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  istenForNotifications = () => {
+    const _this = this;
+
+    Notifications.addListener(notification => {
+      if (notification.origin === 'received') {
+        // We could also make our own design for the toast
+        // _this.refs.toast.show(<View><Text>hello world!</Text></View>);
+
+        const toastDOM = 
+          <TouchableWithoutFeedback 
+            onPress={() => {openFile(notification.data.fileUri)}}
+            style={{padding: '10', backgroundColor: 'green'}}>
+            <Text style={styles.toastText}>{notification.data.body}</Text>
+          </TouchableWithoutFeedback>;
+
+        toast.show(toastDOM, DURATION.FOREVER);
+      } else if (notification.origin === 'selected') {
+        openFile(notification.data.fileUri);
+      }
+        // Expo.Notifications.setBadgeNumberAsync(number);
+        // Notifications.setBadgeNumberAsync(10);
+        // Notifications.presentLocalNotificationAsync(notification);
+        // Alert.alert(notification.title, notification.body);
+    });
+  };
+
+  openFile = (fileUri) => {
+    toast.close(40);
+    console.log('Opening file ' + fileUri);
+    FileSystem.readAsStringAsync(fileUri)
+    .then((fileContents) => {
+      // Get file contents in binary and convert to text
+      // let fileTextContent = parseInt(fileContents, 2);
+      setFilePreviewText({filePreviewText: fileContents});
+    });
+  }
+
+  const resolveExport = async () => {
+    const token = await AsyncStorage.getItem('token');
+
+    // Downloading the file
+    const fileName = summaryType === "PayIn" ? "ulazne.xlsx" : "izlazne.xlsx" + format(new Date(), 'dd_MM_yyyy').toString();
+    const  fileLocation = FileSystem.documentDirectory + fileName;
+    const url = 'https://mv-dev.fleksbit.org/api/getExportedData?firmId=1&date=2021-01-19T10:40:00.874Z&creditDebit=1&exportDateType=EXCEL';
+    FileSystem.downloadAsync(url, fileLocation, { headers: { Authorization: 'Bearer ' + token }})
+    .then(({uri}) => {
+      console.log(uri)
+      const localnotification = {
+        title: 'Download has finished',
+        body: fileName + " has been downloaded. Tap to open file.",
+        android: {
+          sound: true,
+        },
+        ios: {
+          sound: true,
+        },
+        data: {
+          fileUri: uri
+        },
+      };
+      localnotification.data.title = localnotification.title;
+      localnotification.data.body = localnotification.body;
+      let sendAfterFiveSeconds = Date.now();
+      sendAfterFiveSeconds += 3000;
+
+      const schedulingOptions = { time: sendAfterFiveSeconds };
+      Notifications.scheduleLocalNotificationAsync(
+        localnotification,
+        schedulingOptions
+      );
     })
-  }, [])
+    .catch(error => {
+    })
+}
 
   return (
       <Modal
@@ -43,15 +137,14 @@ const ExportModal = ({ }) => {
             </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  setVisibility(false);
-                  ModalService.openModal(false);
+                  resolveExport()
                 }}>
                 <Text style={{ color: '#56d091',fontWeight:'600' }}>POTVRDI</Text>
             </TouchableOpacity>
           </View>
-          
-        </View>
+        </View> 
       </View>
+      <Toast ref={ (ref) => toast=ref }/>
     </Modal>
   );
 };
